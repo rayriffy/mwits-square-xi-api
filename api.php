@@ -370,7 +370,7 @@
       if($row = sqlsrv_fetch_rows($res)){
         $token = $row[0];
       }
-      if(!isset($students)) {
+      if(!isset($token)) {
         $response = array("response" => "error", "remark" => "invalid credentials");
       }
       else {
@@ -379,29 +379,39 @@
     }
   }
 
+  /*
+  |--------------------------------------------
+  | updateschool
+  |--------------------------------------------
+  |
+  | ID: updateschool
+  | Method: POST
+  | Description: Update school name
+  | Payload example:
+  |   {
+  |     "grouptoken" : "randomstring",
+  |     "school_name" : "Gusto Academy"
+  |   }
+  | Output:
+  |    {
+  |     "response" : "success"
+  |    }
+  |
+  */
 
-
-
-
-
-
-
-  // else if($action === "update") {
-  //   if($_SERVER['REQUEST_METHOD'] != "POST") {
-  //     $response = array("response" => "error", "remark" => "invalid method");
-  //   }
-  //   else {
-
-  //   }
-  // }
-  // else if($action === "select") {
-  //   if($_SERVER['REQUEST_METHOD'] != "POST") {
-  //     $response = array("response" => "error", "remark" => "invalid method");
-  //   }
-  //   else {
-      
-  //   }
-  // }
+  else if($action === "updateschool") {
+    if($_SERVER['REQUEST_METHOD'] != "POST") {
+      $response = array("response" => "error", "remark" => "invalid method");
+    }
+    else {
+      $data = json_decode($_POST['data'],true);
+      $token = $data['grouptoken'];
+      $school_name = $data['school_name'];
+      $stmt = sqlsrv_prepare($conn, "UPDATE dbo.form2018 SET school_name = ?, submit_time = ? WHERE token LIKE ?", array($school_name, time(), $token));
+      sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(),true));
+      $response = array("response" => "success");
+    }
+  }
 
   /*
   |--------------------------------------------
