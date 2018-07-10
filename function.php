@@ -1,4 +1,5 @@
 <?php
+
   function randomstring($length = 32) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
@@ -8,4 +9,5 @@
     }
     return $randomString;
   }
+
 ?>
