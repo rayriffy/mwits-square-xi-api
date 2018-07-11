@@ -24,7 +24,7 @@
   |--------------------------------------------------------------------------
   */
 
-  $conn = sqlsrv_connect(MSSQL_HOST , array( "Database" => MSSQL_DATABASE, "UID" => MSSQL_USER, "PWD" => MSSQL_PASS)) or die(print_r(sqlsrv_errors(), true));  
+  $conn = sqlsrv_connect(MSSQL_HOST , array( "Database" => MSSQL_DATABASE, "UID" => MSSQL_USER, "PWD" => MSSQL_PASS)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));  
 
   /*
   |--------------------------------------------------------------------------
@@ -62,10 +62,10 @@
       $pass = password_hash(hash('sha256', $data['pass']), PASSWORD_DEFAULT);
       $email = $data['email'];
       $token = randomstring(32);
-      $stmt = sqlsrv_prepare($conn, "INSERT INTO dbo.users (email, password_hash, token) VALUES (?, ?, ?)", array($email, $pass, $token)) or die(print_r(sqlsrv_errors(), true));
-      sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(),true));
+      $stmt = sqlsrv_prepare($conn, "INSERT INTO dbo.users (email, password_hash, token) VALUES (?, ?, ?)", array($email, $pass, $token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
+      sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       $stmt = sqlsrv_prepare($conn, "INSERT INTO dbo.form2018 (token, student_name_1, student_phone_1, student_grade_1, student_img_1, student_doc_1, student_name_2, student_phone_2, student_grade_2, student_img_2, student_doc_2, student_name_3, student_phone_3, student_grade_3, student_img_3, student_doc_3, teacher_name, teacher_phone, teacher_img, school_name, status_status, submit_time) VALUES (?, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0, ?)", array($token, time()));
-      sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(),true));
+      sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       $response = array("response" => "success");
     }
   }
@@ -121,8 +121,8 @@
     else {
       $data = json_decode($_POST['data'],true);
       $token = $data['grouptoken'];
-      $stmt = sqlsrv_prepare($conn, "SELECT id FROM dbo.users WHERE token LIKE ?", array($token)) or die(print_r(sqlsrv_errors(), true));
-      $res = sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(), true));
+      $stmt = sqlsrv_prepare($conn, "SELECT id FROM dbo.users WHERE token LIKE ?", array($token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
+      $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       if($row = sqlsrv_fetch_rows($res)){
         $id = $row[0];
       }
@@ -140,8 +140,8 @@
           }
         }
         else {
-          $stmt = sqlsrv_prepare($conn, "SELECT student_img_1 FROM dbo.users WHERE token LIKE ?", array($token)) or die(print_r(sqlsrv_errors(), true));
-          $res = sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(), true));
+          $stmt = sqlsrv_prepare($conn, "SELECT student_img_1 FROM dbo.users WHERE token LIKE ?", array($token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
+          $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
           if($row = sqlsrv_fetch_rows($res)) {
             $data["student"][0]["img"] = $row[0];
           }
@@ -156,8 +156,8 @@
           }
         }
         else {
-          $stmt = sqlsrv_prepare($conn, "SELECT student_img_2 FROM dbo.users WHERE token LIKE ?", array($token)) or die(print_r(sqlsrv_errors(), true));
-          $res = sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(), true));
+          $stmt = sqlsrv_prepare($conn, "SELECT student_img_2 FROM dbo.users WHERE token LIKE ?", array($token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
+          $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
           if($row = sqlsrv_fetch_rows($res)) {
             $data["student"][1]["img"] = $row[0];
           }
@@ -172,8 +172,8 @@
           }
         }
         else {
-          $stmt = sqlsrv_prepare($conn, "SELECT student_img_3 FROM dbo.users WHERE token LIKE ?", array($token)) or die(print_r(sqlsrv_errors(), true));
-          $res = sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(), true));
+          $stmt = sqlsrv_prepare($conn, "SELECT student_img_3 FROM dbo.users WHERE token LIKE ?", array($token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
+          $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
           if($row = sqlsrv_fetch_rows($res)) {
             $data["student"][2]["img"] = $row[0];
           }
@@ -188,8 +188,8 @@
           }
         }
         else {
-          $stmt = sqlsrv_prepare($conn, "SELECT teacher_img_3 FROM dbo.users WHERE token LIKE ?", array($token)) or die(print_r(sqlsrv_errors(), true));
-          $res = sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(), true));
+          $stmt = sqlsrv_prepare($conn, "SELECT teacher_img_3 FROM dbo.users WHERE token LIKE ?", array($token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
+          $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
           if($row = sqlsrv_fetch_rows($res)) {
             $data["teacher"][0]["img"] = $row[0];
           }
@@ -204,8 +204,8 @@
           }
         }
         else {
-          $stmt = sqlsrv_prepare($conn, "SELECT student_doc_1 FROM dbo.users WHERE token LIKE ?", array($token)) or die(print_r(sqlsrv_errors(), true));
-          $res = sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(), true));
+          $stmt = sqlsrv_prepare($conn, "SELECT student_doc_1 FROM dbo.users WHERE token LIKE ?", array($token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
+          $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
           if($row = sqlsrv_fetch_rows($res)) {
             $data["student"][0]["doc"] = $row[0];
           }
@@ -220,8 +220,8 @@
           }
         }
         else {
-          $stmt = sqlsrv_prepare($conn, "SELECT student_doc_2 FROM dbo.users WHERE token LIKE ?", array($token)) or die(print_r(sqlsrv_errors(), true));
-          $res = sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(), true));
+          $stmt = sqlsrv_prepare($conn, "SELECT student_doc_2 FROM dbo.users WHERE token LIKE ?", array($token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
+          $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
           if($row = sqlsrv_fetch_rows($res)) {
             $data["student"][1]["doc"] = $row[0];
           }
@@ -236,8 +236,8 @@
           }
         }
         else {
-          $stmt = sqlsrv_prepare($conn, "SELECT student_doc_3 FROM dbo.users WHERE token LIKE ?", array($token)) or die(print_r(sqlsrv_errors(), true));
-          $res = sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(), true));
+          $stmt = sqlsrv_prepare($conn, "SELECT student_doc_3 FROM dbo.users WHERE token LIKE ?", array($token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
+          $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
           if($row = sqlsrv_fetch_rows($res)) {
             $data["student"][2]["doc"] = $row[0];
           }
@@ -247,7 +247,7 @@
         }
         else {
           $stmt = sqlsrv_prepare($conn, "UPDATE dbo.form2018 SET student_name_1 = ?, student_phone_1 = ?, student_grade_1 = ?, student_img_1 = ?, student_doc_1 = ?, student_name_2 = ?, student_phone_2 = ?, student_grade_2 = ?, student_img_2 = ?, student_doc_2 = ?, student_name_3 = ?, student_phone_3 = ?, student_grade_3 = ?, student_img_3 = ?, student_doc_3 = ?, teacher_name = ?, teacher_phone = ?, teacher_img = ?, submit_time = ? WHERE token LIKE ?", array($data["student"][0]["name"], $data["student"][0]["phone"], $data["student"][0]["grade"], $data["student"][0]["img"], $data["student"][0]["doc"], $data["student"][1]["name"], $data["student"][1]["phone"], $data["student"][1]["grade"], $data["student"][1]["img"], $data["student"][1]["doc"], $data["student"][2]["name"], $data["student"][2]["phone"], $data["student"][2]["grade"], $data["student"][2]["img"], $data["student"][2]["doc"], $data["teacher"][0]["name"], $data["teacher"][0]["phone"], $data["teacher"][0]["img"], time(), $token));
-          sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(),true));
+          sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
           $response = array("response" => "success");
         }
       }
@@ -312,8 +312,8 @@
     else {
       $data = json_decode($_POST['data'],true);
       $token = $data['grouptoken'];
-      $stmt = sqlsrv_prepare($conn, "SELECT student_name_1, student_phone_1, student_grade_1, student_img_1, student_doc_1, student_name_2, student_phone_2, student_grade_2, student_img_2, student_doc_2, student_name_3, student_phone_3, student_grade_3, student_img_3, student_doc_3, teacher_name, teacher_phone, teacher_img, submit_time, school_name FROM dbo.users WHERE token LIKE ?", array($token)) or die(print_r(sqlsrv_errors(), true));
-      $res = sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(), true));
+      $stmt = sqlsrv_prepare($conn, "SELECT student_name_1, student_phone_1, student_grade_1, student_img_1, student_doc_1, student_name_2, student_phone_2, student_grade_2, student_img_2, student_doc_2, student_name_3, student_phone_3, student_grade_3, student_img_3, student_doc_3, teacher_name, teacher_phone, teacher_img, submit_time, school_name FROM dbo.users WHERE token LIKE ?", array($token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
+      $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       if($row = sqlsrv_fetch_rows($res)) {
         $is_executed = true;
         $students = array(
@@ -365,8 +365,8 @@
       $data = json_decode($_POST['data'],true);
       $pass = password_hash(hash('sha256', $data['pass']), PASSWORD_DEFAULT);
       $email = $data['email'];
-      $stmt = sqlsrv_prepare($conn, "SELECT token FROM dbo.users WHERE email LIKE ? AND password_hash LIKE ?", array($email, $pass)) or die(print_r(sqlsrv_errors(), true));
-      $res = sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(), true));
+      $stmt = sqlsrv_prepare($conn, "SELECT token FROM dbo.users WHERE email LIKE ? AND password_hash LIKE ?", array($email, $pass)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
+      $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       if($row = sqlsrv_fetch_rows($res)){
         $token = $row[0];
       }
@@ -408,7 +408,7 @@
       $token = $data['grouptoken'];
       $school_name = $data['school_name'];
       $stmt = sqlsrv_prepare($conn, "UPDATE dbo.form2018 SET school_name = ?, submit_time = ? WHERE token LIKE ?", array($school_name, time(), $token));
-      sqlsrv_execute($stmt) or die(print_r(sqlsrv_errors(),true));
+      sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       $response = array("response" => "success");
     }
   }
