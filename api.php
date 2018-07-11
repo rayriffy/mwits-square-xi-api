@@ -1,6 +1,6 @@
 <?php
 
-  header('Content-Type: application/json');
+  header("Content-Type: application/json");
 
   /*
   |--------------------------------------------------------------------------
@@ -8,15 +8,15 @@
   |--------------------------------------------------------------------------
   */
 
-  require_once('constants.php');
-  require_once('function.php');
+  require_once("constants.php");
+  require_once("function.php");
 
-  if(!isset($_POST['action']) && $_POST['privatetoken'] != API_SECRET) {
+  if(!isset($_POST["action"]) && $_POST["privatetoken"] != API_SECRET) {
     $response = array("response" => "error", "remark" => "access denied");
     echo json_encode($response);
     exit();
   }
-  $action = $_POST['action'];
+  $action = $_POST["action"];
 
   /*
   |--------------------------------------------------------------------------
@@ -54,13 +54,13 @@
   */
 
   if($action === "signup") {
-    if($_SERVER['REQUEST_METHOD'] != "POST") {
+    if($_SERVER["REQUEST_METHOD"] != "POST") {
       $response = array("response" => "error", "remark" => "invalid method");
     }
     else {
-      $data = json_decode($_POST['data'],true);
-      $pass = password_hash(hash('sha256', $data['pass']), PASSWORD_DEFAULT);
-      $email = $data['email'];
+      $data = json_decode($_POST["data"],true);
+      $pass = password_hash(hash('sha256', $data["pass"]), PASSWORD_DEFAULT);
+      $email = $data["email"];
       $token = randomstring(32);
       $stmt = sqlsrv_prepare($conn, "INSERT INTO dbo.users (email, password_hash, token) VALUES (?, ?, ?)", array($email, $pass, $token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
@@ -115,12 +115,12 @@
   */
 
   else if($action === "updatestudent") {
-    if($_SERVER['REQUEST_METHOD'] != "POST") {
+    if($_SERVER["REQUEST_METHOD"] != "POST") {
       $response = array("response" => "error", "remark" => "invalid method");
     }
     else {
-      $data = json_decode($_POST['data'],true);
-      $token = $data['grouptoken'];
+      $data = json_decode($_POST["data"],true);
+      $token = $data["grouptoken"];
       $stmt = sqlsrv_prepare($conn, "SELECT id FROM dbo.users WHERE token LIKE ?", array($token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       if($row = sqlsrv_fetch_rows($res)){
@@ -131,8 +131,8 @@
       }
       else {
         if($_FILES["imgstd1"]) {
-          if(strtolower(end(explode('.', $_FILES['imgstd1']['name']))) == "png" || strtolower(end(explode('.', $_FILES['imgstd1']['name']))) == "jpg" || strtolower(end(explode('.', $_FILES['imgstd1']['name']))) == "jpeg") {
-            $data["student"][0]["img"] = "storage/img/".$token."1".end(explode('.', $_FILES['imgstd1']['name']));
+          if(strtolower(end(explode('.', $_FILES["imgstd1"]["name"]))) == "png" || strtolower(end(explode('.', $_FILES["imgstd1"]["name"]))) == "jpg" || strtolower(end(explode('.', $_FILES["imgstd1"]["name"]))) == "jpeg") {
+            $data["student"][0]["img"] = "storage/img/".$token."1".end(explode('.', $_FILES["imgstd1"]["name"]));
             move_uploaded_file($_FILES["imgstd1"]["tmp_name"], $data["student"][0]["img"]);
           }
           else {
@@ -147,8 +147,8 @@
           }
         }
         if($_FILES["imgstd2"]) {
-          if(strtolower(end(explode('.', $_FILES['imgstd2']['name']))) == "png" || strtolower(end(explode('.', $_FILES['imgstd2']['name']))) == "jpg" || strtolower(end(explode('.', $_FILES['imgstd2']['name']))) == "jpeg") {
-            $data["student"][1]["img"] = "storage/img/".$token."1".end(explode('.', $_FILES['imgstd2']['name']));
+          if(strtolower(end(explode('.', $_FILES["imgstd2"]["name"]))) == "png" || strtolower(end(explode('.', $_FILES["imgstd2"]["name"]))) == "jpg" || strtolower(end(explode('.', $_FILES["imgstd2"]["name"]))) == "jpeg") {
+            $data["student"][1]["img"] = "storage/img/".$token."1".end(explode('.', $_FILES["imgstd2"]["name"]));
             move_uploaded_file($_FILES["imgstd2"]["tmp_name"], $data["student"][1]["img"]);
           }
           else {
@@ -163,8 +163,8 @@
           }
         }
         if($_FILES["imgstd3"]) {
-          if(strtolower(end(explode('.', $_FILES['imgstd3']['name']))) == "png" || strtolower(end(explode('.', $_FILES['imgstd3']['name']))) == "jpg" || strtolower(end(explode('.', $_FILES['imgstd3']['name']))) == "jpeg") {
-            $data["student"][2]["img"] = "storage/img/".$token."1".end(explode('.', $_FILES['imgstd3']['name']));
+          if(strtolower(end(explode('.', $_FILES["imgstd3"]["name"]))) == "png" || strtolower(end(explode('.', $_FILES["imgstd3"]["name"]))) == "jpg" || strtolower(end(explode('.', $_FILES["imgstd3"]["name"]))) == "jpeg") {
+            $data["student"][2]["img"] = "storage/img/".$token."1".end(explode('.', $_FILES["imgstd3"]["name"]));
             move_uploaded_file($_FILES["imgstd3"]["tmp_name"], $data["student"][2]["img"]);
           }
           else {
@@ -179,8 +179,8 @@
           }
         }
         if($_FILES["imgtea"]) {
-          if(strtolower(end(explode('.', $_FILES['imgtea']['name']))) == "png" || strtolower(end(explode('.', $_FILES['imgtea']['name']))) == "jpg" || strtolower(end(explode('.', $_FILES['imgtea']['name']))) == "jpeg") {
-            $data["teacher"][0]["img"] = "storage/img/".$token."4".end(explode('.', $_FILES['imgtea']['name']));
+          if(strtolower(end(explode('.', $_FILES["imgtea"]["name"]))) == "png" || strtolower(end(explode('.', $_FILES["imgtea"]["name"]))) == "jpg" || strtolower(end(explode('.', $_FILES["imgtea"]["name"]))) == "jpeg") {
+            $data["teacher"][0]["img"] = "storage/img/".$token."4".end(explode('.', $_FILES["imgtea"]["name"]));
             move_uploaded_file($_FILES["imgtea"]["tmp_name"], $data["teacher"][0]["img"]);
           }
           else {
@@ -195,8 +195,8 @@
           }
         }
         if($_FILES["docstd1"]) {
-          if(strtolower(end(explode('.', $_FILES['docstd1']['name']))) == "png" || strtolower(end(explode('.', $_FILES['docstd1']['name']))) == "jpg" || strtolower(end(explode('.', $_FILES['docstd1']['name']))) == "jpeg" || strtolower(end(explode('.', $_FILES['docstd1']['name']))) == "pdf") {
-            $data["student"][0]["doc"] = "storage/doc/".$token."1".end(explode('.', $_FILES['docstd1']['name']));
+          if(strtolower(end(explode('.', $_FILES["docstd1"]["name"]))) == "png" || strtolower(end(explode('.', $_FILES["docstd1"]["name"]))) == "jpg" || strtolower(end(explode('.', $_FILES["docstd1"]["name"]))) == "jpeg" || strtolower(end(explode('.', $_FILES["docstd1"]["name"]))) == "pdf") {
+            $data["student"][0]["doc"] = "storage/doc/".$token."1".end(explode('.', $_FILES["docstd1"]["name"]));
             move_uploaded_file($_FILES["docstd1"]["tmp_name"], $data["student"][0]["doc"]);
           }
           else {
@@ -211,8 +211,8 @@
           }
         }
         if($_FILES["docstd2"]) {
-          if(strtolower(end(explode('.', $_FILES['docstd2']['name']))) == "png" || strtolower(end(explode('.', $_FILES['docstd2']['name']))) == "jpg" || strtolower(end(explode('.', $_FILES['docstd2']['name']))) == "jpeg" || strtolower(end(explode('.', $_FILES['docstd1']['name']))) == "pdf") {
-            $data["student"][1]["doc"] = "storage/doc/".$token."1".end(explode('.', $_FILES['docstd2']['name']));
+          if(strtolower(end(explode('.', $_FILES["docstd2"]["name"]))) == "png" || strtolower(end(explode('.', $_FILES["docstd2"]["name"]))) == "jpg" || strtolower(end(explode('.', $_FILES["docstd2"]["name"]))) == "jpeg" || strtolower(end(explode('.', $_FILES["docstd1"]["name"]))) == "pdf") {
+            $data["student"][1]["doc"] = "storage/doc/".$token."1".end(explode('.', $_FILES["docstd2"]["name"]));
             move_uploaded_file($_FILES["docstd2"]["tmp_name"], $data["student"][1]["doc"]);
           }
           else {
@@ -227,8 +227,8 @@
           }
         }
         if($_FILES["docstd3"]) {
-          if(strtolower(end(explode('.', $_FILES['docstd3']['name']))) == "png" || strtolower(end(explode('.', $_FILES['docstd3']['name']))) == "jpg" || strtolower(end(explode('.', $_FILES['docstd3']['name']))) == "jpeg" || strtolower(end(explode('.', $_FILES['docstd1']['name']))) == "pdf") {
-            $data["student"][2]["doc"] = "storage/doc/".$token."1".end(explode('.', $_FILES['docstd3']['name']));
+          if(strtolower(end(explode('.', $_FILES["docstd3"]["name"]))) == "png" || strtolower(end(explode('.', $_FILES["docstd3"]["name"]))) == "jpg" || strtolower(end(explode('.', $_FILES["docstd3"]["name"]))) == "jpeg" || strtolower(end(explode('.', $_FILES["docstd1"]["name"]))) == "pdf") {
+            $data["student"][2]["doc"] = "storage/doc/".$token."1".end(explode('.', $_FILES["docstd3"]["name"]));
             move_uploaded_file($_FILES["docstd3"]["tmp_name"], $data["student"][2]["doc"]);
           }
           else {
@@ -306,12 +306,12 @@
   */
 
   else if($action === "getdata") {
-    if($_SERVER['REQUEST_METHOD'] != "POST") {
+    if($_SERVER["REQUEST_METHOD"] != "POST") {
       $response = array("response" => "error", "remark" => "invalid method");
     }
     else {
-      $data = json_decode($_POST['data'],true);
-      $token = $data['grouptoken'];
+      $data = json_decode($_POST["data"],true);
+      $token = $data["grouptoken"];
       $stmt = sqlsrv_prepare($conn, "SELECT student_name_1, student_phone_1, student_grade_1, student_img_1, student_doc_1, student_name_2, student_phone_2, student_grade_2, student_img_2, student_doc_2, student_name_3, student_phone_3, student_grade_3, student_img_3, student_doc_3, teacher_name, teacher_phone, teacher_img, submit_time, school_name FROM dbo.users WHERE token LIKE ?", array($token)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       if($row = sqlsrv_fetch_rows($res)) {
@@ -358,13 +358,13 @@
   */
 
   else if($action === "login") {
-    if($_SERVER['REQUEST_METHOD'] != "POST") {
+    if($_SERVER["REQUEST_METHOD"] != "POST") {
       $response = array("response" => "error", "remark" => "invalid method");
     }
     else {
-      $data = json_decode($_POST['data'],true);
-      $pass = password_hash(hash('sha256', $data['pass']), PASSWORD_DEFAULT);
-      $email = $data['email'];
+      $data = json_decode($_POST["data"],true);
+      $pass = password_hash(hash('sha256', $data["pass"]), PASSWORD_DEFAULT);
+      $email = $data["email"];
       $stmt = sqlsrv_prepare($conn, "SELECT token FROM dbo.users WHERE email LIKE ? AND password_hash LIKE ?", array($email, $pass)) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       $res = sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       if($row = sqlsrv_fetch_rows($res)){
@@ -400,13 +400,13 @@
   */
 
   else if($action === "updateschool") {
-    if($_SERVER['REQUEST_METHOD'] != "POST") {
+    if($_SERVER["REQUEST_METHOD"] != "POST") {
       $response = array("response" => "error", "remark" => "invalid method");
     }
     else {
-      $data = json_decode($_POST['data'],true);
-      $token = $data['grouptoken'];
-      $school_name = $data['school_name'];
+      $data = json_decode($_POST["data"],true);
+      $token = $data["grouptoken"];
+      $school_name = $data["school_name"];
       $stmt = sqlsrv_prepare($conn, "UPDATE dbo.form2018 SET school_name = ?, submit_time = ? WHERE token LIKE ?", array($school_name, time(), $token));
       sqlsrv_execute($stmt) or die(json_encode(array("response" => "fatal error", "remark" => sqlsrv_errors())));
       $response = array("response" => "success");

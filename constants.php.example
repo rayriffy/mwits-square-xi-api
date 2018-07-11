@@ -1,4 +1,5 @@
 <?php
+
   define("MSSQL_HOST","localhost");
   define("MSSQL_USER","mwitssq");
   define("MSSQL_PASS","secret");
