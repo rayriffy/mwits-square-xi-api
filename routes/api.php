@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 
-Route::post('/signup', function (Request $request) {
+Route::post('signup', function (Request $request) {
     $request = $request->json()->all();
 
     if(empty($request["api_key"]) || empty($request["data"])) {
@@ -42,7 +42,7 @@ Route::post('/signup', function (Request $request) {
     return array("response" => "success");
 });
 
-Route::post('/login', function (Request $request) {
+Route::post('login', function (Request $request) {
     $request = $request->json()->all();
 
     if(empty($request["api_key"]) || empty($request["data"])) {
@@ -65,7 +65,7 @@ Route::post('/login', function (Request $request) {
     }
 });
 
-Route::post('/getdata', function (Request $request) {
+Route::post('getdata', function (Request $request) {
     $request = $request->json()->all();
 
     if(empty($request["api_key"]) || empty($request["data"])) {
@@ -119,7 +119,7 @@ Route::post('/getdata', function (Request $request) {
     );
 });
 
-Route::post('/updateschool', function (Request $request) {
+Route::post('updateschool', function (Request $request) {
     $request = $request->json()->all();
 
     if(empty($request["api_key"]) || empty($request["data"])) {
@@ -140,7 +140,7 @@ Route::post('/updateschool', function (Request $request) {
     }
 });
 
-Route::post('/updatedata', function (Request $request) {
+Route::post('updatedata', function (Request $request) {
     $request = $request->json()->all();
 
     if(empty($request["api_key"]) || empty($request["data"])) {
@@ -171,7 +171,9 @@ Route::post('/updatedata', function (Request $request) {
         $student[0]["img"] = "storage/image".$data["grouptoken"].'1.'.strtolower($data["student"][0]["file"]["image"]["ext"]);
     }
     else {
-        $student[0]["img"] = App\USERFORM::select('student_img_1')->where('token', $data["grouptoken"])->get();
+        $query = App\USERFORM::select('student_img_1')->where('token', $data["grouptoken"])->first();
+        $student[0]["img"] = $query["student_img_1"];
+        unset($query);
     }
     if(isset($data["student"][1]["file"]["image"])) {
         if(!in_array(strtolower($data["student"][1]["file"]["image"]["ext"]), $allowedImageEXT)) {
@@ -184,7 +186,9 @@ Route::post('/updatedata', function (Request $request) {
         $student[1]["img"] = "storage/image".$data["grouptoken"].'2.'.strtolower($data["student"][1]["file"]["image"]["ext"]);
     }
     else {
-        $student[1]["img"] = App\USERFORM::select('student_img_2')->where('token', $data["grouptoken"])->get();
+        $query = App\USERFORM::select('student_img_2')->where('token', $data["grouptoken"])->first();
+        $student[1]["img"] = $query["student_img_2"];
+        unset($query);
     }
     if(isset($data["student"][2]["file"]["image"])) {
         if(!in_array(strtolower($data["student"][2]["file"]["image"]["ext"]), $allowedImageEXT)) {
@@ -197,7 +201,9 @@ Route::post('/updatedata', function (Request $request) {
         $student[2]["img"] = "storage/image".$data["grouptoken"].'3.'.strtolower($data["student"][2]["file"]["image"]["ext"]);
     }
     else {
-        $student[2]["img"] = App\USERFORM::select('student_img_3')->where('token', $data["grouptoken"])->get();
+        $query = App\USERFORM::select('student_img_3')->where('token', $data["grouptoken"])->first();
+        $student[2]["img"] = $query["student_img_3"];
+        unset($query);
     }
     if(isset($data["teacher"][0]["file"]["image"])) {
         if(!in_array(strtolower($data["teacher"][0]["file"]["image"]["ext"]), $allowedImageEXT)) {
@@ -210,7 +216,9 @@ Route::post('/updatedata', function (Request $request) {
         $teacher[0]["img"] = "storage/image".$data["grouptoken"].'4.'.strtolower($data["teacher"][0]["file"]["image"]["ext"]);
     }
     else {
-        $teacher[0]["img"] = App\USERFORM::select('teacher_img')->where('token', $data["grouptoken"])->get();
+        $query = App\USERFORM::select('teacher_img')->where('token', $data["grouptoken"])->first();
+        $teacher[0]["img"] = $query["teacher_img"];
+        unset($query);
     }
     if(isset($data["student"][0]["file"]["doc"])) {
         if(!in_array(strtolower($data["student"][0]["file"]["doc"]["ext"]), $allowedDocEXT)) {
@@ -223,7 +231,9 @@ Route::post('/updatedata', function (Request $request) {
         $student[0]["doc"] = "storage/doc".$data["grouptoken"].'1.'.strtolower($data["student"][0]["file"]["doc"]["ext"]);
     }
     else {
-        $student[0]["doc"] = App\USERFORM::select('student_doc_1')->where('token', $data["grouptoken"])->get();
+        $query = App\USERFORM::select('student_doc_1')->where('token', $data["grouptoken"])->first();
+        $student[0]["doc"] = $query["student_doc_1"];
+        unset($query);
     }
     if(isset($data["student"][1]["file"]["doc"])) {
         if(!in_array(strtolower($data["student"][1]["file"]["doc"]["ext"]), $allowedDocEXT)) {
@@ -236,7 +246,9 @@ Route::post('/updatedata', function (Request $request) {
         $student[1]["doc"] = "storage/doc".$data["grouptoken"].'2.'.strtolower($data["student"][1]["file"]["doc"]["ext"]);
     }
     else {
-        $student[1]["doc"] = App\USERFORM::select('student_doc_2')->where('token', $data["grouptoken"])->get();
+        $query = App\USERFORM::select('student_doc_2')->where('token', $data["grouptoken"])->first();
+        $student[1]["doc"] = $query["student_doc_2"];
+        unset($query);
     }
     if(isset($data["student"][2]["file"]["doc"])) {
         if(!in_array(strtolower($data["student"][2]["file"]["doc"]["ext"]), $allowedDocEXT)) {
@@ -249,7 +261,9 @@ Route::post('/updatedata', function (Request $request) {
         $student[2]["doc"] = "storage/doc".$data["grouptoken"].'3.'.strtolower($data["student"][2]["file"]["doc"]["ext"]);
     }
     else {
-        $student[2]["doc"] = App\USERFORM::select('student_doc_3')->where('token', $data["grouptoken"])->get();
+        $query = App\USERFORM::select('student_doc_3')->where('token', $data["grouptoken"])->first();
+        $student[2]["doc"] = $query["student_doc_3"];
+        unset($query);
     }
 
     if(isset($remark)) {
