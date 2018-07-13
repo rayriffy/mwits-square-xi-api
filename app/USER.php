@@ -19,10 +19,10 @@ class USER extends Model
         'token',
         'email',
         'password'
-];
+    ];
 
     protected $hidden = [
-        'updated_at'
+        'created_at'
     ];
 
     protected $dates = ['deleted_at'];
