@@ -16,6 +16,11 @@ use Illuminate\Http\Request;
 
 Route::post('/signup', function (Request $request) {
     $request = $request->json()->all();
+
+    if(empty($request["api_key"]) || empty($request["data"])) {
+        return array("response" => "error", "remark" => "missing some/all payload");
+    }
+
     if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
         return array("response" => "error", "remark" => "access denined");
     }
@@ -39,6 +44,11 @@ Route::post('/signup', function (Request $request) {
 
 Route::post('/login', function (Request $request) {
     $request = $request->json()->all();
+
+    if(empty($request["api_key"]) || empty($request["data"])) {
+        return array("response" => "error", "remark" => "missing some/all payload");
+    }
+
     if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
         return array("response" => "error", "remark" => "access denined");
     }
@@ -57,17 +67,22 @@ Route::post('/login', function (Request $request) {
 
 Route::post('/getdata', function (Request $request) {
     $request = $request->json()->all();
+
+    if(empty($request["api_key"]) || empty($request["data"])) {
+        return array("response" => "error", "remark" => "missing some/all payload");
+    }
+
     if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
         return array("response" => "error", "remark" => "access denined");
     }
 
     $data = $request["data"];
 
-    $query = null;
-    $query = App\USERFORM::where("token", $data["grouptoken"])->get();
-    if(!$query) {
+    if(!(App\USERFORM::where("token", $data["grouptoken"])->exists())) {
         return array("response" => "error", "remark" => "token not found");
     }
+
+    $query = App\USERFORM::where("token", $data["grouptoken"])->first();
     return array(
         "students" => array(
             array(
@@ -106,6 +121,11 @@ Route::post('/getdata', function (Request $request) {
 
 Route::post('/updateschool', function (Request $request) {
     $request = $request->json()->all();
+
+    if(empty($request["api_key"]) || empty($request["data"])) {
+        return array("response" => "error", "remark" => "missing some/all payload");
+    }
+
     if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
         return array("response" => "error", "remark" => "access denined");
     }
@@ -122,13 +142,18 @@ Route::post('/updateschool', function (Request $request) {
 
 Route::post('/updatedata', function (Request $request) {
     $request = $request->json()->all();
+
+    if(empty($request["api_key"]) || empty($request["data"])) {
+        return array("response" => "error", "remark" => "missing some/all payload");
+    }
+
     if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
         return array("response" => "error", "remark" => "access denined");
     }
 
     $data = $request["data"];
 
-    if(!(App\USER::where("token", $data["grouptoken"])->get())) {
+    if(!(App\USER::where("token", $data["grouptoken"])->exists())) {
         return array("response" => "error", "remark" => "token not found");
     }
 
