@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 
 Route::post('/signup', function (Request $request) {
+    $request = $request->json()->all();
     if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
         return array("response" => "error", "remark" => "access denined");
     }
@@ -37,13 +38,12 @@ Route::post('/signup', function (Request $request) {
 });
 
 Route::post('/login', function (Request $request) {
+    $request = $request->json()->all();
     if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
         return array("response" => "error", "remark" => "access denined");
     }
 
     $data = json_decode($request["data"], true);
-
-    $group_token = App\USER::where("email", $data["email"])->where("password", bcrypt($data["pass"]))->get();
 
     $login_result = App\USER::select('password','token')->where("email", $data["email"])->first();
 
@@ -56,6 +56,7 @@ Route::post('/login', function (Request $request) {
 });
 
 Route::post('/getdata', function (Request $request) {
+    $request = $request->json()->all();
     if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
         return array("response" => "error", "remark" => "access denined");
     }
@@ -104,6 +105,7 @@ Route::post('/getdata', function (Request $request) {
 });
 
 Route::post('/updateschool', function (Request $request) {
+    $request = $request->json()->all();
     if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
         return array("response" => "error", "remark" => "access denined");
     }
@@ -119,6 +121,7 @@ Route::post('/updateschool', function (Request $request) {
 });
 
 Route::post('/updatedata', function (Request $request) {
+    $request = $request->json()->all();
     if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
         return array("response" => "error", "remark" => "access denined");
     }
