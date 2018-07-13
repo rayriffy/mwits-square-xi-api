@@ -20,7 +20,7 @@ Route::post('/signup', function (Request $request) {
         return array("response" => "error", "remark" => "access denined");
     }
 
-    $data = json_decode($request["data"], true);
+    $data = $request["data"];
     $pretoken=str_random(32);
 
     $user = new App\USER();
@@ -43,7 +43,7 @@ Route::post('/login', function (Request $request) {
         return array("response" => "error", "remark" => "access denined");
     }
 
-    $data = json_decode($request["data"], true);
+    $data = $request["data"];
 
     $login_result = App\USER::select('password','token')->where("email", $data["email"])->first();
 
@@ -61,7 +61,7 @@ Route::post('/getdata', function (Request $request) {
         return array("response" => "error", "remark" => "access denined");
     }
 
-    $data = json_decode($request["data"], true);
+    $data = $request["data"];
 
     $query = null;
     $query = App\USERFORM::where("token", $data["grouptoken"])->get();
@@ -110,7 +110,7 @@ Route::post('/updateschool', function (Request $request) {
         return array("response" => "error", "remark" => "access denined");
     }
 
-    $data = json_decode($request["data"], true);
+    $data = $request["data"];
 
     if(App\USERFORM::where("token", $data["grouptoken"])->update(["school_name" => $data["school_name"]])) {
         return array("response" => "success");
@@ -126,7 +126,7 @@ Route::post('/updatedata', function (Request $request) {
         return array("response" => "error", "remark" => "access denined");
     }
 
-    $data = json_decode($request["data"], true);
+    $data = $request["data"];
 
     if(!(App\USER::where("token", $data["grouptoken"])->get())) {
         return array("response" => "error", "remark" => "token not found");
