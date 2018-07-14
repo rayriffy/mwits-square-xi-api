@@ -114,7 +114,12 @@ Route::post('getdata', function (Request $request) {
                 "img" => $query["teacher_img"]
             )
         ),
-        "school_name" => $query["school_name"],
+        "school" => array(
+            array(
+                "name" => $query["school_name"],
+                "doc" => $query["school_doc"]
+            )
+        ),
         "timestamp" => $query["updated_at"]
     );
 });
@@ -137,6 +142,54 @@ Route::post('updateschool', function (Request $request) {
     }
     else {
         return array("response" => "error", "remark" => "token not found");
+    }
+});
+
+Route::post('uploadschooldoc', function (Request $request) {
+
+    $request = $request->json()->all();
+
+    if(empty($request["api_key"]) || empty($request["data"])) {
+        return array("response" => "error", "remark" => "missing some/all payload");
+    }
+
+    if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
+        return array("response" => "error", "remark" => "access denined");
+    }
+
+    $data = $request["data"];
+
+    $allowedDocEXT = array("jpg","png","jpeg","pdf");
+
+    if(isset($data["school"][0]["file"]["doc"])) {
+        if(!in_array(strtolower($data["school"][0]["file"]["doc"]["ext"]), $allowedDocEXT)) {
+            $remark[] = array(
+                "from" => "doc_school",
+                "status" => "invalid file extension"
+            );
+        }
+        Storage::disk('publicdoc')->put($data["grouptoken"].'.school.'.strtolower($data["school"][0]["file"]["doc"]["ext"]), base64_decode($data["school"][0]["file"]["doc"]["base64"]));
+        $school[0]["doc"] = "storage/doc/".$data["grouptoken"].'.school.'.strtolower($data["school"][0]["file"]["doc"]["ext"]);
+    }
+    else {
+        $query = App\USERFORM::select('school_doc')->where('token', $data["grouptoken"])->first();
+        $school[0]["doc"] = $query["school_doc"];
+        unset($query);
+    }
+
+    if(isset($remark)) {
+        return array("response"=> "error", "remark" => $remark);
+    }
+
+    $thingstoupdate = array(
+        "school_doc" => $school[0]["doc"]
+    );
+
+    if(App\USERFORM::where("token", $data["grouptoken"])->update($thingstoupdate)) {
+        return array("response" => "success");
+    }
+    else {
+        return array("response" => "error", "remark" => "cannot update form");
     }
 });
 
@@ -167,8 +220,8 @@ Route::post('updatedata', function (Request $request) {
                 "status" => "invalid file extension"
             );
         }
-        Storage::disk('publicimage')->put($data["grouptoken"].'1.'.strtolower($data["student"][0]["file"]["image"]["ext"]), base64_decode($data["student"][0]["file"]["image"]["base64"]));
-        $student[0]["img"] = "storage/image".$data["grouptoken"].'1.'.strtolower($data["student"][0]["file"]["image"]["ext"]);
+        Storage::disk('publicimage')->put($data["grouptoken"].'.1.'.strtolower($data["student"][0]["file"]["image"]["ext"]), base64_decode($data["student"][0]["file"]["image"]["base64"]));
+        $student[0]["img"] = "storage/image/".$data["grouptoken"].'.1.'.strtolower($data["student"][0]["file"]["image"]["ext"]);
     }
     else {
         $query = App\USERFORM::select('student_img_1')->where('token', $data["grouptoken"])->first();
@@ -182,8 +235,8 @@ Route::post('updatedata', function (Request $request) {
                 "status" => "invalid file extension"
             );
         }
-        Storage::disk('publicimage')->put($data["grouptoken"].'2.'.strtolower($data["student"][1]["file"]["image"]["ext"]), base64_decode($data["student"][1]["file"]["image"]["base64"]));
-        $student[1]["img"] = "storage/image".$data["grouptoken"].'2.'.strtolower($data["student"][1]["file"]["image"]["ext"]);
+        Storage::disk('publicimage')->put($data["grouptoken"].'.2.'.strtolower($data["student"][1]["file"]["image"]["ext"]), base64_decode($data["student"][1]["file"]["image"]["base64"]));
+        $student[1]["img"] = "storage/image/".$data["grouptoken"].'.2.'.strtolower($data["student"][1]["file"]["image"]["ext"]);
     }
     else {
         $query = App\USERFORM::select('student_img_2')->where('token', $data["grouptoken"])->first();
@@ -197,8 +250,8 @@ Route::post('updatedata', function (Request $request) {
                 "status" => "invalid file extension"
             );
         }
-        Storage::disk('publicimage')->put($data["grouptoken"].'3.'.strtolower($data["student"][2]["file"]["image"]["ext"]), base64_decode($data["student"][2]["file"]["image"]["base64"]));
-        $student[2]["img"] = "storage/image".$data["grouptoken"].'3.'.strtolower($data["student"][2]["file"]["image"]["ext"]);
+        Storage::disk('publicimage')->put($data["grouptoken"].'.3.'.strtolower($data["student"][2]["file"]["image"]["ext"]), base64_decode($data["student"][2]["file"]["image"]["base64"]));
+        $student[2]["img"] = "storage/image/".$data["grouptoken"].'.3.'.strtolower($data["student"][2]["file"]["image"]["ext"]);
     }
     else {
         $query = App\USERFORM::select('student_img_3')->where('token', $data["grouptoken"])->first();
@@ -212,8 +265,8 @@ Route::post('updatedata', function (Request $request) {
                 "status" => "invalid file extension"
             );
         }
-        Storage::disk('publicimage')->put($data["grouptoken"].'4.'.strtolower($data["teacher"][0]["file"]["image"]["ext"]), base64_decode($data["teacher"][0]["file"]["image"]["base64"]));
-        $teacher[0]["img"] = "storage/image".$data["grouptoken"].'4.'.strtolower($data["teacher"][0]["file"]["image"]["ext"]);
+        Storage::disk('publicimage')->put($data["grouptoken"].'.4.'.strtolower($data["teacher"][0]["file"]["image"]["ext"]), base64_decode($data["teacher"][0]["file"]["image"]["base64"]));
+        $teacher[0]["img"] = "storage/image/".$data["grouptoken"].'.4.'.strtolower($data["teacher"][0]["file"]["image"]["ext"]);
     }
     else {
         $query = App\USERFORM::select('teacher_img')->where('token', $data["grouptoken"])->first();
@@ -227,8 +280,8 @@ Route::post('updatedata', function (Request $request) {
                 "status" => "invalid file extension"
             );
         }
-        Storage::disk('publicdoc')->put($data["grouptoken"].'1.'.strtolower($data["student"][0]["file"]["doc"]["ext"]), base64_decode($data["student"][0]["file"]["doc"]["base64"]));
-        $student[0]["doc"] = "storage/doc".$data["grouptoken"].'1.'.strtolower($data["student"][0]["file"]["doc"]["ext"]);
+        Storage::disk('publicdoc')->put($data["grouptoken"].'.1.'.strtolower($data["student"][0]["file"]["doc"]["ext"]), base64_decode($data["student"][0]["file"]["doc"]["base64"]));
+        $student[0]["doc"] = "storage/doc/".$data["grouptoken"].'.1.'.strtolower($data["student"][0]["file"]["doc"]["ext"]);
     }
     else {
         $query = App\USERFORM::select('student_doc_1')->where('token', $data["grouptoken"])->first();
@@ -242,8 +295,8 @@ Route::post('updatedata', function (Request $request) {
                 "status" => "invalid file extension"
             );
         }
-        Storage::disk('publicdoc')->put($data["grouptoken"].'2.'.strtolower($data["student"][1]["file"]["doc"]["ext"]), base64_decode($data["student"][1]["file"]["doc"]["base64"]));
-        $student[1]["doc"] = "storage/doc".$data["grouptoken"].'2.'.strtolower($data["student"][1]["file"]["doc"]["ext"]);
+        Storage::disk('publicdoc')->put($data["grouptoken"].'.2.'.strtolower($data["student"][1]["file"]["doc"]["ext"]), base64_decode($data["student"][1]["file"]["doc"]["base64"]));
+        $student[1]["doc"] = "storage/doc/".$data["grouptoken"].'.2.'.strtolower($data["student"][1]["file"]["doc"]["ext"]);
     }
     else {
         $query = App\USERFORM::select('student_doc_2')->where('token', $data["grouptoken"])->first();
@@ -257,8 +310,8 @@ Route::post('updatedata', function (Request $request) {
                 "status" => "invalid file extension"
             );
         }
-        Storage::disk('publicdoc')->put($data["grouptoken"].'3.'.strtolower($data["student"][2]["file"]["doc"]["ext"]), base64_decode($data["student"][2]["file"]["doc"]["base64"]));
-        $student[2]["doc"] = "storage/doc".$data["grouptoken"].'3.'.strtolower($data["student"][2]["file"]["doc"]["ext"]);
+        Storage::disk('publicdoc')->put($data["grouptoken"].'.3.'.strtolower($data["student"][2]["file"]["doc"]["ext"]), base64_decode($data["student"][2]["file"]["doc"]["base64"]));
+        $student[2]["doc"] = "storage/doc/".$data["grouptoken"].'.3.'.strtolower($data["student"][2]["file"]["doc"]["ext"]);
     }
     else {
         $query = App\USERFORM::select('student_doc_3')->where('token', $data["grouptoken"])->first();
