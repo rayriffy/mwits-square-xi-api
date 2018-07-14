@@ -28,7 +28,7 @@ Route::post('signup', function (Request $request) {
     $data = $request["data"];
     $pretoken=str_random(32);
 
-    if(!(App\USERFORM::where("email", $data["email"])->exists())) {
+    if(!(App\USER::where("email", $data["email"])->exists())) {
         return array("response" => "error", "remark" => "email already exists");
     }
 
