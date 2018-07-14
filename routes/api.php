@@ -28,6 +28,10 @@ Route::post('signup', function (Request $request) {
     $data = $request["data"];
     $pretoken=str_random(32);
 
+    if(!(App\USERFORM::where("email", $data["email"])->exists())) {
+        return array("response" => "error", "remark" => "email already exists");
+    }
+
     $user = new App\USER();
     $user->email = $data["email"];
     $user->password = Hash::make($data["pass"]);

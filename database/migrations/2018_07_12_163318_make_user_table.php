@@ -15,7 +15,7 @@ class MakeUserTable extends Migration
     {
         Schema::create('user', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('email');
+            $table->text('email')->unique();
             $table->text('password');
             $table->text('token');
             $table->timestamps();
