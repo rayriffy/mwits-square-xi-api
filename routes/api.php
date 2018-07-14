@@ -355,3 +355,49 @@ Route::post('updatedata', function (Request $request) {
         return array("response" => "error", "remark" => "cannot update form");
     }
 });
+
+Route::post('iamfuckingdone', function (Request $request) {
+    $request = $request->json()->all();
+
+    if(empty($request["api_key"]) || empty($request["data"])) {
+        return array("response" => "error", "remark" => "missing some/all payload");
+    }
+
+    if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
+        return array("response" => "error", "remark" => "access denined");
+    }
+
+    $data = $request["data"];
+
+    if(!(App\USERFORM::where("token", $data["grouptoken"])->exists())) {
+        return array("response" => "error", "remark" => "token not found");
+    }
+
+    $check_column = array(
+        "student_name_1", "student_phone_1", "student_grade_1", "student_img_1", "student_doc_1",
+        "student_name_2", "student_phone_2", "student_grade_2", "student_img_2", "student_doc_2",
+        "student_name_3", "student_phone_3", "student_grade_3", "student_img_3", "student_doc_3",
+        "teacher_name", "teacher_phone", "teacher_img", "school_name", "school_doc"
+    );
+    $query = App\USERFORM::where("token", $data["grouptoken"])->first();
+
+    foreach($check_column as $ref) {
+        if(empty($query[$ref]) || is_null($query[$ref])) {
+            $remark[] = array(
+                "from" => $ref,
+                "status" => "data seems empty"
+            );
+        }
+    }
+
+    if(isset($remark)) {
+        return array("response" => "error", "remark" => $remark);
+    }
+
+    if(App\USERFORM::where("token", $data["grouptoken"])->update(["status_status" => 1])) {
+        return array("response" => "success");
+    }
+    else {
+        return array("response" => "error", "remark" => "cannot update form");
+    }
+});
