@@ -401,3 +401,25 @@ Route::post('iamfuckingdone', function (Request $request) {
         return array("response" => "error", "remark" => "cannot update form");
     }
 });
+
+Route::post('deleteuser', function (Request $request) {
+    $request = $request->json()->all();
+
+    if(empty($request["api_key"]) || empty($request["data"])) {
+        return array("response" => "error", "remark" => "missing some/all payload");
+    }
+
+    if($request["api_key"]!=env('API_KEY', 'riffydaddyallhome')) {
+        return array("response" => "error", "remark" => "access denined");
+    }
+
+    $data = $request["data"];
+
+    if(!(App\USERFORM::where("token", $data["grouptoken"])->exists())) {
+        return array("response" => "error", "remark" => "token not found");
+    }
+    else {
+        App\USERFORM::where("token", $data["grouptoken"])->delete();
+        return array("response" => "success");
+    }
+});
