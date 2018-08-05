@@ -18,11 +18,11 @@ class USER extends Model
     protected $fillable = [
         'token',
         'email',
-        'password'
+        'password',
     ];
 
     protected $hidden = [
-        'created_at'
+        'created_at',
     ];
 
     protected $dates = ['deleted_at'];

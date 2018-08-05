@@ -36,11 +36,11 @@ class USERFORM extends Model
         'teacher_phone',
         'teacher_img',
         'school_name',
-        'status_status'
+        'status_status',
 ];
 
     protected $hidden = [
-        'created_at'
+        'created_at',
     ];
 
     protected $dates = ['deleted_at'];

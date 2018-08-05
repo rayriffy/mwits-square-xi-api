@@ -12,9 +12,9 @@
 */
 
 Route::get('/', function () {
-    return array("response" => "error", "remark" => "access denined");
+    return ['response' => 'error', 'remark' => 'access denined'];
 });
 
-Route::fallback(function(){
-    return array("response" => "error", "remark" => "access denined");
+Route::fallback(function () {
+    return ['response' => 'error', 'remark' => 'access denined'];
 });
